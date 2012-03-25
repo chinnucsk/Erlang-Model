@@ -1,0 +1,13 @@
+{application, model,
+ [
+  {description, ""},
+  {vsn, git},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib,
+		  mnesia
+                 ]},
+  {mod, { model_app, []}},
+  {env, []}
+ ]}.
