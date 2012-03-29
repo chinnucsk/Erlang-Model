@@ -1,0 +1,52 @@
+==Erlang Model==
+
+Erlang model provides two things; first it provides a CRUD interface for crud-ing data to/from the database, and second it uses smerl to provide access methods the actual data that is hidden inside parameterized modules.
+
+The actual model is (currently) defined in the application data:
+
+Example sys.config:
+
+[{model,
+
+  %% A person has a name and an email
+  %% A blog has a title
+  %% A blog post has some text
+  {data, [{person, [name, email]}, {blog, [title]}, {blog_post, [text]}]},
+
+  %% A person can have many blogs, but each blog only one person (the author)
+  %% A blog can have many blog_posts, but each blog post is made in only one blog
+  {one2many, [{person, blog}, {blog, blog_post}]},
+
+  {many2many, []}}
+].
+
+At application start model will create the required database tables. The current behaviour if there is an error when creating a new table, the the application will create no more table and refuse to be started. This can occur when wanting to update an existing table by as an example adding an attribute.
+
+Alice = model:create(person, [{name, "Alice"}, {email, "alice@sec.test"}])
+Blog = model:create(blog, [{title, "Blog"}])
+Blog_post = model:create(blog_post, [{text, "My blog post"}, {blog, Blog}])
+
+Alice:name()
+Alice:name("new name")
+Alice:email()
+Alice:email("new email")
+Alice:blogs()
+Alice:blog_ids()
+Alice:add_blog(Blog)
+Alice:add_blog_id(Blog:id())
+Alice:remove_blog(Blog)
+Alice:remove_blog_id(Blog:id())
+
+Blog:title()
+Blog:title("new title")
+Blog:person()
+Blog:person(Alice)
+Blog:person_id()
+Blog:person_id(Alice:id())
+
+Blog_post:text()
+Blog_post:text("updated blog text")
+Blog_post:blog()
+Blog_post:blog(Blog)
+Blog_post:blog_id()
+Blog_post:blog_id(Blog:id())

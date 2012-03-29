@@ -1,4 +1,3 @@
-
 -module(model_sup).
 
 -behaviour(supervisor).
